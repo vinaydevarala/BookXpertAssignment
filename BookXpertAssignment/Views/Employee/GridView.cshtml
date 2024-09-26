@@ -1,0 +1,52 @@
+﻿@model List<Employee>
+
+<button>
+    <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Add New Employee</a>
+</button>
+
+<h3>List of Employees</h3>
+<table>
+    <thead>
+        <tr>
+            <th>S.No.</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Date of Join</th>
+            <th>Salary</th>
+            <th>Gender</th>
+            <th>State</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+                <td>
+                    <a asp-action="Index" asp-route-id="@Model[i].Id">@Model[i].Name</a> <!-- Redirects to Edit -->
+                </td>
+                <td>@Model[i].Designation</td>
+                <td>@Model[i].DateOfJoining.ToShortDateString()</td>
+                <td>@Model[i].Salary</td>
+                <td>@Model[i].Gender</td>
+                <td>@Model[i].State</td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@Model[i].Id" method="post" onsubmit="return confirm('Are you sure to delete this employee?');">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Total Salary: <span id="totalSalary"></span></h3>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.get("/Employee/TotalSalary", function (data) {
+            $("#totalSalary").text(data);
+        });
+    });
+</script>

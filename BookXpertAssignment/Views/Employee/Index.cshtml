@@ -1,0 +1,140 @@
+﻿@model Employee
+
+<style>
+    /* Add a red asterisk after labels with the class 'required' */
+    .required::after {
+        content: " *";
+        color: red;
+    }
+
+    .text-danger {
+        color: red;
+    }
+</style>
+
+<h2>Employee Details</h2>
+
+<form id="employeeForm" asp-action="Save" method="post">
+    <!-- Validation Summary for displaying errors at the top of the form -->
+    <!-- Hidden input for Employee Id -->
+    <input type="hidden" asp-for="Id" autocomplete="off" />
+
+    <!-- Name Field -->
+    <label for="Name" class="required">Name:</label><br />
+    <input type="text" asp-for="Name" autocomplete="off" class="required form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span><br />
+
+    <!-- Designation Field -->
+    <label for="Designation" class="required">Designation:</label><br />
+    <input type="text" asp-for="Designation" autocomplete="off" class="required form-control" />
+    <span asp-validation-for="Designation" class="text-danger"></span><br />
+
+    <!-- Date of Joining Field -->
+    <label for="DateOfJoining" class="required">Date of Joining:</label><br />
+    <input type="date" asp-for="DateOfJoining" class="form-control"/>
+    <span asp-validation-for="DateOfJoining" class="text-danger"></span><br />
+
+    <!-- Salary Field -->
+    <label for="Salary" class="required">Salary:</label><br />
+    <input type="number" asp-for="Salary" class="required form-control" />
+    <span asp-validation-for="Salary" class="text-danger"></span><br />
+
+    <!-- Gender Radio Buttons -->
+    <div class="form-group">
+        <label for="Gender" class="required">Gender:</label><br />
+        <input type="radio" asp-for="Gender" value="M" /> Male<br />
+        <input type="radio" asp-for="Gender" value="F" /> Female<br />
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <!-- State Dropdown -->
+    <label for="State" class="required">State:</label><br />
+    <select asp-for="State" class="form-control">
+        <option value="">--Select--</option>
+        <option value="Andhra Pradesh">Andhra Pradesh</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Telangana">Telangana</option>
+    </select>
+    <span asp-validation-for="State" class="text-danger"></span><br />
+
+    <!-- Submit Button -->
+    <button type="submit" id="saveBtn" class="btn btn-info">Save</button>
+</form>
+
+<!-- Button to Go to GridView -->
+<button type="button" class="btn btn-secondary" onclick="window.location.href='/Employee/GridView'">Go to GridView</button>
+
+@section Scripts {
+    <!-- Include jQuery and jQuery Validation libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#employeeForm").submit(function (event) {
+                // Prevent default form submission
+                event.preventDefault();
+
+                // Clear previous validation messages
+                $(".text-danger").text("");
+
+                // Get values from the form
+                var name = $("#Name").val();
+                var designation = $("#Designation").val();
+                var dateOfJoining = $("#DateOfJoining").val();
+                
+                var salary = $("#Salary").val();
+                var gender = $("input[name='Gender']:checked").val();
+                var state = $("#State").val();
+
+                var isValid = true;
+
+                // Validate Name
+                if (!name) {
+                    $("#Name").next(".text-danger").text("Name is required.");
+                    isValid = false;
+                }
+
+                // Validate Designation
+                if (!designation) {
+                    $("#Designation").next(".text-danger").text("Designation is required.");
+                    isValid = false;
+                }
+               const yearOfJoining = dateOfJoining ? new Date(dateOfJoining).getFullYear() : null;
+                // Validate Date of Joining
+                if (!dateOfJoining || !yearOfJoining || yearOfJoining<=1) {
+                    $("#DateOfJoining").next(".text-danger").text("Date of Joining is required.");
+                    isValid = false;
+                }
+
+                // Validate Salary
+                if (!salary) {
+                    $("#Salary").next(".text-danger").text("Salary is required.");
+                    isValid = false;
+                } else if (salary <= 0) {
+                    $("#Salary").next(".text-danger").text("Salary must be greater than zero.");
+                    isValid = false;
+                }
+
+                // Validate Gender
+                if (!gender) {
+                    $("input[name='Gender']").next(".text-danger").text("Gender is required.");
+                    isValid = false;
+                }
+
+                // Validate State
+                if (!state) {
+                    $("#State").next(".text-danger").text("State is required.");
+                    isValid = false;
+                }
+
+                // If all fields are valid, submit the form
+                if (isValid) {
+                    this.submit(); // submit the form if valid
+                }
+            });
+        });
+    </script>
+
+}
